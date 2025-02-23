@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anniversary Journey</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+  <!-- Header -->
+  <header class="text-center py-20 bg-gradient-to-r from-gray-800 to-gray-900">
+    <h1 class="text-4xl md:text-6xl font-bold" data-aos="fade-down">Love Journey</h1>
+    <p class="text-lg md:text-xl mt-4 text-yellow-400" data-aos="fade-up" data-aos-delay="200">24 Februari 2025</p>
+    <div class="mt-6" data-aos="fade-up" data-aos-delay="400">
+      <button id="musicButton" onclick="toggleMusic()" class="px-6 py-2 bg-yellow-400 text-gray-900 rounded-full hover:bg-yellow-500 transition-colors duration-300">
+        <i class="fas fa-play mr-2"></i>
+        <span>Putar Lagunya</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Timeline Section -->
+  <div class="container mx-auto px-4 py-10">
+    <div id="momentsContainer"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-10 bg-gray-800">
+    <p class="text-lg">Made with ❤️ by Fangky Ristiawan Dan di Sponsori Oleh Ega Tiara Agustine.</p>
+  </footer>
+
+  <!-- Templates -->
+  <template id="momentTemplate">
+    <div class="flex flex-col md:flex-row items-center mb-10 md:mb-20" data-aos="fade-right">
+      <div class="w-full md:w-1/2">
+        <img src="" alt="" class="moment-thumbnail rounded-lg shadow-2xl border-2 border-yellow-400 mx-auto max-h-[70vh] object-cover">
+      </div>
+      <div class="w-full md:w-1/2 md:pl-10 mt-6 md:mt-0">
+        <h2 class="text-3xl md:text-4xl font-bold text-yellow-400"></h2>
+        <p class="text-base md:text-lg mt-4"></p>
+        <button class="mt-4 px-6 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition-colors duration-300">
+          Lihat Momen
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <template id="modalTemplate">
+    <div class="fixed inset-0 z-50 hidden">
+      <div class="fixed inset-0 bg-black bg-opacity-75"></div>
+      <div class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-lg shadow-2xl max-w-[70%] w-full p-6 relative">
+          <button class="modal-close absolute top-4 right-4 text-yellow-400 hover:text-yellow-500 text-3xl">
+            &times;
+          </button>
+          <div class="swiper-container">
+            <div class="swiper-wrapper"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+          <div class="mt-6 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-yellow-400"></h2>
+            <p class="text-base md:text-lg mt-4"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <audio id="backgroundMusic" loop>
+    <source src="assets/lagu.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung pemutaran audio.
+  </audio>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+  <script>
+    const audioPlayer = document.getElementById('backgroundMusic');
+    const musicButton = document.getElementById('musicButton');
+    let isPlaying = false;
+
+    function toggleMusic() {
+      if(isPlaying) {
+        audioPlayer.pause();
+        musicButton.innerHTML = `<i class="fas fa-play mr-2"></i><span>Putar Lagu Kita</span>`;
+      } else {
+        audioPlayer.play();
+        musicButton.innerHTML = `<i class="fas fa-pause mr-2"></i><span>Jeda Lagu</span>`;
+      }
+      isPlaying = !isPlaying;
+    }
+
+    // Otomatis ulang musik ketika selesai
+    audioPlayer.addEventListener('ended', function() {
+      audioPlayer.currentTime = 0;
+      audioPlayer.play();
+    });
+
+    // Konfigurasi fleksibel
+    const MOMENTS_CONFIG = [
+      { 
+        title: "Momen Pertama",
+        description: "Momen Pertama Tercipta Bareng ayang hehe..",
+        images: 9 // Momen 1 punya 10 gambar
+      },
+      {
+        title: "Momen Kedua",
+        description: "Ke Event Bareng ayang", 
+        images: 6 // Momen 2 punya 15 gambar
+      },
+      {
+        title: "Momen Ketiga",
+        description: "Ngafe, Wisuda dan Foto Wisuda Dengan 2 Keluarga hehe",
+        images: 10 // Momen 3 punya 8 gambar
+      },
+      {
+        title: "Momen Keempat",
+        description: "Ngerayain Ultah Bareng hehe",
+        images: 3 // Momen 3 punya 8 gambar
+      },
+      {
+        title: "Momen Random",
+        description: "Foto Random yang mas temukan di hp hehe",
+        images: 32 // Momen 3 punya 8 gambar
+      }
+    ];
+
+    // Generate konten
+    function generateContent() {
+      const momentsContainer = document.getElementById('momentsContainer');
+      const modalsContainer = document.createElement('div');
+      
+      MOMENTS_CONFIG.forEach((config, index) => {
+        const momentNumber = index + 1;
+        
+        // Generate timeline item
+        const momentClone = document.getElementById('momentTemplate').content.cloneNode(true);
+        momentClone.querySelector('h2').textContent = config.title;
+        momentClone.querySelector('p').textContent = config.description;
+        momentClone.querySelector('.moment-thumbnail').src = `images/momen${momentNumber}/1.jpg`;
+        momentClone.querySelector('.moment-thumbnail').alt = `${config.title} Thumbnail`;
+        momentClone.querySelector('button').onclick = () => openModal(`modal${momentNumber}`);
+        momentsContainer.appendChild(momentClone);
+
+        // Generate modal
+        const modalClone = document.getElementById('modalTemplate').content.cloneNode(true);
+        const modal = modalClone.querySelector('div');
+        modal.id = `modal${momentNumber}`;
+        modal.querySelector('h2').textContent = config.title;
+        modal.querySelector('p').textContent = config.description;
+        
+        // Generate slides
+        const swiperWrapper = modal.querySelector('.swiper-wrapper');
+        for(let i = 1; i <= config.images; i++) {
+          const slide = document.createElement('div');
+          slide.className = 'swiper-slide';
+          slide.innerHTML = `
+            <img src="images/momen${momentNumber}/${i}.jpg" 
+                 alt="${config.title} Image ${i}" 
+                 class="rounded-lg shadow-2xl border-2 border-yellow-400 mx-auto max-h-[70vh] object-cover">
+          `;
+          swiperWrapper.appendChild(slide);
+        }
+
+        // Add modal close handler
+        modal.querySelector('.modal-close').onclick = () => closeModal(`modal${momentNumber}`);
+        modalsContainer.appendChild(modal);
+      });
+
+      document.body.appendChild(modalsContainer);
+    }
+
+    // Initialize
+    function init() {
+      generateContent();
+      
+      // Initialize AOS
+      AOS.init({
+        duration: 1000,
+        once: true,
+      });
+
+      // Initialize Swipers
+      const swipers = document.querySelectorAll('.swiper-container');
+      swipers.forEach(swiper => {
+        new Swiper(swiper, {
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      });
+
+      // Close modal on outside click
+      window.onclick = (event) => {
+        if(event.target.classList.contains('fixed')) {
+          document.querySelectorAll('[id^="modal"]').forEach(modal => {
+            modal.classList.add('hidden');
+          });
+        }
+      }
+    }
+
+    // Modal functions
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // Start the app
+    init();
+  </script>
+</body>
+</html>

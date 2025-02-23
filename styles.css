@@ -1,0 +1,72 @@
+/* Efek hover untuk teks */
+.hover-glow:hover {
+    text-shadow: 0 0 10px rgba(255, 193, 7, 0.8);
+    /* Glow emas */
+}
+
+/* Efek hover untuk gambar */
+.hover-zoom {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-zoom:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 193, 7, 0.2);
+    /* Bayangan emas */
+}
+
+/* Background animasi */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 193, 7, 0.1) 10%, transparent 10%);
+    background-size: 20px 20px;
+    z-index: -1;
+    animation: moveBackground 10s linear infinite;
+}
+
+@keyframes moveBackground {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
+/* Pastikan gambar tidak melebihi lebar layar di HP */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Efek hover untuk desktop saja */
+@media (min-width: 768px) {
+    .hover-zoom:hover {
+        transform: scale(1.05);
+    }
+}
+
+/* Swiper Pagination Color */
+.swiper-pagination-bullet {
+    background: #fff;
+    /* Warna bullet */
+}
+
+.swiper-pagination-bullet-active {
+    background: #f59e0b;
+    /* Warna bullet aktif (emas) */
+}
+
+/* Swiper Navigation Buttons */
+.swiper-button-next,
+.swiper-button-prev {
+    color: #f59e0b;
+    /* Warna tombol navigasi (emas) */
+}
+
